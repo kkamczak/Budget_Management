@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="button_add_category">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>170</y>
+      <x>20</x>
+      <y>30</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -30,14 +30,50 @@
    <widget class="QPushButton" name="button_add_expense">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>220</y>
+      <x>20</x>
+      <y>90</y>
       <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>Dodaj wydatek</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="table_of_expenses">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>160</y>
+      <width>451</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_edit_expense">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>170</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edytuj</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_delete_expense">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>200</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Usuń</string>
     </property>
    </widget>
   </widget>
@@ -50,8 +86,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_close"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_close">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
