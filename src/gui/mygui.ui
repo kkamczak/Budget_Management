@@ -6,34 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
-    <height>733</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="button_add_category">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>141</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Dodaj kategorie</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="button_add_expense">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>90</y>
-      <width>141</width>
-      <height>41</height>
+      <x>470</x>
+      <y>280</y>
+      <width>140</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
@@ -43,20 +30,20 @@
    <widget class="QTableWidget" name="table_of_expenses">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>160</y>
+      <x>10</x>
+      <y>281</y>
       <width>451</width>
-      <height>192</height>
+      <height>391</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="button_edit_expense">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>170</y>
-      <width>75</width>
-      <height>23</height>
+      <x>470</x>
+      <y>332</y>
+      <width>140</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
@@ -66,14 +53,96 @@
    <widget class="QPushButton" name="button_delete_expense">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>200</y>
-      <width>75</width>
-      <height>23</height>
+      <x>470</x>
+      <y>382</y>
+      <width>140</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
      <string>Usuń</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_sort_expense">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>430</y>
+      <width>140</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sortuj</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="table_of_category_expenses">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>280</y>
+      <width>451</width>
+      <height>391</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateEdit" name="date_start">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>520</y>
+      <width>110</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QDateEdit" name="date_end">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>590</y>
+      <width>110</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_date_start">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>492</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>od</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_date_end">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>560</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>do</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="update_date">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>630</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Aktualizuj</string>
     </property>
    </widget>
   </widget>
@@ -82,7 +151,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1017</width>
+     <width>1280</width>
      <height>21</height>
     </rect>
    </property>
@@ -90,6 +159,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="action_categories"/>
     <addaction name="action_close"/>
    </widget>
    <addaction name="menuFile"/>
@@ -98,6 +168,11 @@
   <action name="action_close">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="action_categories">
+   <property name="text">
+    <string>Categories</string>
    </property>
   </action>
  </widget>

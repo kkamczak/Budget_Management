@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QWidget, QTextEdit
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
 from src.support import puts
-from src.database import insert_data, update_row
-from src.settings import  COLUMNS_NAMES
+from src.database import insert_data, update_row, load_data
+from src.settings import  EXPENSES_COLUMNS_NAMES
 from typing import Callable
 
 
@@ -16,22 +16,31 @@ class Add_Window(QWidget):
         self.setFixedSize(self.size())
         self.show()
 
+        self.configure_table = configure
 
+        # Configure window
         self.button_cancel.clicked.connect(self.close)
         self.button_add.clicked.connect(self.add)
 
-        self.configure_table = configure
+        self.configure_window()
 
-        # setting date to the date edit
+    def configure_window(self) -> None:
         self.date_edit.setDate(QDate.currentDate())
+
+        self.category_edit.clear()
+        categories_names = []
+        respond = load_data('categories', 'ID')
+        for item in respond:
+            categories_names.append(item[1])
+        self.category_edit.addItems(categories_names)
+
         self.value_edit.setMaximum(100000.00)
         self.value_edit.setMinimum(0.00)
-
     def add(self):
         date = self.date_edit.date().toString("yyyy-MM-dd")
         name = self.name_edit.text()
         category = self.category_edit.currentText()
-        value = str(round(float(self.value_edit.value()), 2))
+        value = round(float(self.value_edit.value()), 2)
 
         puts(f'{date}, {name}, {category}, {value}')
         insert_data('expenses', [date, name, category, value])
@@ -57,7 +66,7 @@ class Edit_Expense(Add_Window):
         self.date_edit.setDate(date)
         self.name_edit.setText(row_data[2])
         self.category_edit.setCurrentText(row_data[3])
-        self.value_edit.setValue(round(float(row_data[4], 2)))
+        self.value_edit.setValue(round(float(row_data[4]), 2))
 
 
     def add(self) -> None:
@@ -67,7 +76,7 @@ class Edit_Expense(Add_Window):
         value = str(self.value_edit.value())
 
         puts(f'Index = {self.index}')
-        update_row('expenses', COLUMNS_NAMES, [self.index, date, name, category, value])
+        update_row('expenses', EXPENSES_COLUMNS_NAMES, [self.index, date, name, category, value])
         self.configure_table()
 
         self.close()
