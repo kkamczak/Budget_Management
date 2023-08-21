@@ -1,10 +1,10 @@
+"""
+This module contains auxiliary functions
+"""
 from datetime import datetime
 from typing import Optional
 from PyQt5.QtWidgets import QMessageBox
-
-def format_list_row(row: tuple) -> str:
-    text = f"{row[0]} | {row[1]} | {row[2]} | {row[3]} zł"
-    return text
+from PyQt5.QtCore import QDate
 
 def puts (text: str) -> None:
     """
@@ -22,7 +22,7 @@ def message_box(msg: str, info: Optional[str] = None) -> None:
     '''
     This function display message box
     :param msg: str
-    :param info: str
+    :param info: Optional[str]
     :return: None
     '''
     if info is not None:
@@ -32,3 +32,13 @@ def message_box(msg: str, info: Optional[str] = None) -> None:
     message = QMessageBox()
     message.setText(text)
     message.exec_()
+
+def get_first_last_day() -> list[QDate, QDate]:
+    today = QDate.currentDate()
+
+    first_day = QDate(today.year(), today.month(), 1)
+    next_month = QDate(today.year(), today.month() + 1, 1)
+    last_day = next_month.addDays(-1)
+
+    return [first_day, last_day]
+

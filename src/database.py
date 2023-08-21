@@ -1,7 +1,10 @@
+"""
+This module contains functions to handle the database
+"""
 import sqlite3
 from src.settings import DATABASE_PATH, EXPENSES_COLUMNS_NAMES, CATEGORIES_COLUMNS_NAMES, ERROR_CONNECT_TO_DATABASE
 from src.support import puts, message_box
-from typing import Optional
+from typing import Optional, Any
 
 def create_tables() -> None:
     """
@@ -26,9 +29,18 @@ def create_tables() -> None:
                            {EXPENSES_COLUMNS_NAMES[4]} real
                        )""")
 
+            cursor.execute(f"""CREATE TABLE IF NOT EXISTS revenues(
+                                       {EXPENSES_COLUMNS_NAMES[0]} integer,
+                                       {EXPENSES_COLUMNS_NAMES[1]} text,
+                                       {EXPENSES_COLUMNS_NAMES[2]} text,
+                                       {EXPENSES_COLUMNS_NAMES[3]} text,
+                                       {EXPENSES_COLUMNS_NAMES[4]} real
+                                   )""")
+
             cursor.execute(f"""CREATE TABLE IF NOT EXISTS categories(
                             {CATEGORIES_COLUMNS_NAMES[0]} integer,
-                            {CATEGORIES_COLUMNS_NAMES[1]} text                
+                            {CATEGORIES_COLUMNS_NAMES[1]} text,
+                            {CATEGORIES_COLUMNS_NAMES[2]} real              
                         )""")
 
             connection.commit()
@@ -73,11 +85,13 @@ def insert_data(table_name: str, data: list[str]) -> None:
         else:
             puts(ERROR_CONNECT_TO_DATABASE)
 
-def load_data(table_name: str, column_order: str) -> list[tuple]:
+def load_data(table_name: str, column_order: str, reverse: Optional[bool] = False, date: Optional[list[str]] = None) -> list[tuple]:
     """
         This function inserts data from table in database...
         :param table_name: str
         :param column_order: str
+        :param reverse: Optional[bool]
+        :param date: Optional[list]
         :return: None
         """
     connection = None
@@ -91,10 +105,15 @@ def load_data(table_name: str, column_order: str) -> list[tuple]:
             cursor = connection.cursor() # Create cursor
 
             try:
-                cursor.execute(f"SELECT rowid, * FROM {table_name} ORDER BY {column_order}")
+                if reverse:
+                    column_order = f"{column_order} DESC"
+                if date:
+                    cursor.execute(f"SELECT rowid, * FROM {table_name} WHERE Data BETWEEN '{date[0]}' AND '{date[1]}' ORDER BY {column_order}")
+                else:
+                    cursor.execute(f"SELECT rowid, * FROM {table_name} ORDER BY {column_order}")
                 for item in cursor.fetchall():
-                    data = item[1:]
-                    data_list.append(data)
+                    date = item[1:]
+                    data_list.append(date)
             except Exception as e:
                 puts(f"Exception: {e.__str__()}")
                 message_box(f'There was unexpected error with loading data...')
@@ -107,12 +126,12 @@ def load_data(table_name: str, column_order: str) -> list[tuple]:
             puts(ERROR_CONNECT_TO_DATABASE)
             return data_list
 
-def update_row(table_name: str, column_names: list[str], data: list[str]) -> None:
+def update_row(table_name: str, column_names: list[str], data: list[Any]) -> None:
     """
     This function inserts data to table in database...
     :param table_name: str
     :param column_names: list[str]
-    :param data: list[str]
+    :param data: list[Any]
     :return: None
     """
     connection = None
@@ -230,7 +249,7 @@ def get_id_by_name(table_name: str, column_name: str, name: str) -> Optional[int
         else:
             puts(ERROR_CONNECT_TO_DATABASE)
 
-def sum_all_cells(table_name: str, target: str, by_column: str, content: str) -> float:
+def sum_all_cells(table_name: str, target: str, by_column: str, content: str, date: str) -> float:
     """
    This function gets id by name...
    :param table_name: str
@@ -250,7 +269,7 @@ def sum_all_cells(table_name: str, target: str, by_column: str, content: str) ->
             cursor = connection.cursor() # Create cursor
 
             try:
-                cursor.execute(f"SELECT {target} FROM {table_name} WHERE {by_column} LIKE '{content}'")
+                cursor.execute(f"SELECT {target} FROM {table_name} WHERE {by_column} LIKE '{content}' AND Data BETWEEN '{date[0]}' AND '{date[1]}'")
                 respond = cursor.fetchall()
                 sum = 0.0
                 for item in respond:
