@@ -10,6 +10,22 @@ LEFTSPACE = int(SCREEN_WIDTH / 150)
 BUTTONSPACE = 50
 ID_WIDTH = 25
 
+TRANSACTIONS = ['Wydatek', 'Przychód']
+MONTHS = {
+    "styczeń": 1,
+    "luty": 2,
+    "marzec": 3,
+    "kwiecień": 4,
+    "maj": 5,
+    "czerwiec": 6,
+    "lipiec": 7,
+    "sierpień": 8,
+    "wrzesień": 9,
+    "październik": 10,
+    "listopad": 11,
+    "grudzień": 12
+}
+
 TABLES_SIZE = {
     'Expenses': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 2)),
     'Categories': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 2)),
@@ -19,13 +35,13 @@ TABLES_SIZE = {
 BUTTON_1_SIZE = (140, 40)
 
 w = int(TABLES_SIZE['Expenses'][0] / 10)
-EXPENSES_COLUMNS_WIDTH = [w, 2*w,3*w, 2*w, 2*w]
-EXPENSES_COLUMNS_NAMES = ['ID', 'Data', 'Nazwa', 'Kategoria', 'Wartość']
+TRANS_COLS_WIDTH = [w, 2 * w, 3 * w, 2 * w, 2 * w]
+TRANS_COLS_NAMES = ['ID', 'Data', 'Nazwa', 'Kategoria', 'Wartość']
 
-CATEGORIES_COLUMNS_NAMES = ['ID', 'Nazwa', 'Budżet']
+CATS_DB_COLS_NAMES = ['ID', 'Nazwa', 'Budżet', 'Rodzaj']
 w = int(TABLES_SIZE['Categories'][0] / 10)
-CATEGORIES_COLUMNS_WIDTH = [4*w, 3*w, 3*w]
-CATEGORIES_TABLE_COLUMN_NAMES = ['Nazwa kategorii', 'Budżet', 'Suma wydatków']
+CAT_TABLE_COLS_WIDTH = [4 * w, 2 * w, 2 * w, 2 * w]
+CATS_TABLE_COLS_NAMES = ['Nazwa kategorii', 'Budżet', 'Wydane', 'Stan']
 
 
 ERROR_CONNECT_TO_DATABASE = 'There was problem with connect to database...'

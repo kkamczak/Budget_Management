@@ -2,7 +2,7 @@
 This module contains functions to handle the database
 """
 import sqlite3
-from src.settings import DATABASE_PATH, EXPENSES_COLUMNS_NAMES, CATEGORIES_COLUMNS_NAMES, ERROR_CONNECT_TO_DATABASE
+from src.settings import DATABASE_PATH, TRANS_COLS_NAMES, CATS_DB_COLS_NAMES, ERROR_CONNECT_TO_DATABASE
 from src.support import puts, message_box
 from typing import Optional, Any
 
@@ -22,25 +22,26 @@ def create_tables() -> None:
             cursor = connection.cursor()
             # Create a Table
             cursor.execute(f"""CREATE TABLE IF NOT EXISTS expenses(
-                           {EXPENSES_COLUMNS_NAMES[0]} integer,
-                           {EXPENSES_COLUMNS_NAMES[1]} text,
-                           {EXPENSES_COLUMNS_NAMES[2]} text,
-                           {EXPENSES_COLUMNS_NAMES[3]} text,
-                           {EXPENSES_COLUMNS_NAMES[4]} real
+                           {TRANS_COLS_NAMES[0]} integer,
+                           {TRANS_COLS_NAMES[1]} text,
+                           {TRANS_COLS_NAMES[2]} text,
+                           {TRANS_COLS_NAMES[3]} text,
+                           {TRANS_COLS_NAMES[4]} real
                        )""")
 
             cursor.execute(f"""CREATE TABLE IF NOT EXISTS revenues(
-                                       {EXPENSES_COLUMNS_NAMES[0]} integer,
-                                       {EXPENSES_COLUMNS_NAMES[1]} text,
-                                       {EXPENSES_COLUMNS_NAMES[2]} text,
-                                       {EXPENSES_COLUMNS_NAMES[3]} text,
-                                       {EXPENSES_COLUMNS_NAMES[4]} real
+                                       {TRANS_COLS_NAMES[0]} integer,
+                                       {TRANS_COLS_NAMES[1]} text,
+                                       {TRANS_COLS_NAMES[2]} text,
+                                       {TRANS_COLS_NAMES[3]} text,
+                                       {TRANS_COLS_NAMES[4]} real
                                    )""")
 
             cursor.execute(f"""CREATE TABLE IF NOT EXISTS categories(
-                            {CATEGORIES_COLUMNS_NAMES[0]} integer,
-                            {CATEGORIES_COLUMNS_NAMES[1]} text,
-                            {CATEGORIES_COLUMNS_NAMES[2]} real              
+                            {CATS_DB_COLS_NAMES[0]} integer,
+                            {CATS_DB_COLS_NAMES[1]} text,
+                            {CATS_DB_COLS_NAMES[2]} real,
+                            {CATS_DB_COLS_NAMES[3]} text              
                         )""")
 
             connection.commit()
@@ -85,12 +86,13 @@ def insert_data(table_name: str, data: list[str]) -> None:
         else:
             puts(ERROR_CONNECT_TO_DATABASE)
 
-def load_data(table_name: str, column_order: str, reverse: Optional[bool] = False, date: Optional[list[str]] = None) -> list[tuple]:
+def load_data(table_name: str, column_order: str, reverse: Optional[bool] = False, kind: Optional[list] = None, date: Optional[list[str]] = None) -> list[tuple]:
     """
         This function inserts data from table in database...
         :param table_name: str
         :param column_order: str
         :param reverse: Optional[bool]
+        :param kind: Optional[list]
         :param date: Optional[list]
         :return: None
         """
@@ -109,6 +111,8 @@ def load_data(table_name: str, column_order: str, reverse: Optional[bool] = Fals
                     column_order = f"{column_order} DESC"
                 if date:
                     cursor.execute(f"SELECT rowid, * FROM {table_name} WHERE Data BETWEEN '{date[0]}' AND '{date[1]}' ORDER BY {column_order}")
+                elif kind:
+                    cursor.execute(f"SELECT rowid, * FROM {table_name} WHERE {kind[0]} LIKE '{kind[1]}' ORDER BY {column_order}")
                 else:
                     cursor.execute(f"SELECT rowid, * FROM {table_name} ORDER BY {column_order}")
                 for item in cursor.fetchall():

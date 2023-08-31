@@ -33,12 +33,14 @@ def message_box(msg: str, info: Optional[str] = None) -> None:
     message.setText(text)
     message.exec_()
 
-def get_first_last_day() -> list[QDate, QDate]:
+def get_first_last_day(month: Optional[int] = None) -> list[QDate, QDate]:
     today = QDate.currentDate()
+    if month is None:
+        month = today.month()
 
-    first_day = QDate(today.year(), today.month(), 1)
-    next_month = QDate(today.year(), today.month() + 1, 1)
+    first_day = QDate(today.year(), month, 1)
+
+    next_month = QDate(today.year(), month + 1, 1)
     last_day = next_month.addDays(-1)
 
     return [first_day, last_day]
-

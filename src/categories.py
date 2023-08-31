@@ -3,10 +3,10 @@ Then module is used to display category edit window.
 """
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import uic
-from typing import Callable
+from typing import Callable, Optional
 from src.database import check_if_exists, insert_data, load_data, get_id_by_name, update_row, delete_record
 from src.support import message_box
-from src.settings import CATEGORIES_COLUMNS_NAMES
+from src.settings import CATS_DB_COLS_NAMES, TRANSACTIONS
 
 class Categories_Window(QWidget):
     """
@@ -28,17 +28,25 @@ class Categories_Window(QWidget):
         self.button_edit.clicked.connect(self.edit)
         self.button_delete.clicked.connect(self.delete)
         self.button_cancel.clicked.connect(self.close)
+        self.type_choose.addItems(TRANSACTIONS)
+        self.type_choose.currentTextChanged.connect(lambda: self.configure_window(kind=self.type_choose.currentText()))
         self.configure_window()
 
-    def configure_window(self) -> None:
+    def configure_window(self, kind: Optional[str] = TRANSACTIONS[0]) -> None:
         """
         This method configures the items on the window
         :return: None
         """
+        # Choose type of transaction:
+        self.type_choose.setCurrentText(kind)
+
         # -- Configure QComboBox item ----------------
         self.box_categories.clear()
         categories_names = []
-        respond = load_data('categories', 'ID')
+        if self.type_choose.currentText() == TRANSACTIONS[0]:
+            respond = load_data('categories', 'ID', kind=[CATS_DB_COLS_NAMES[3], TRANSACTIONS[0]])
+        else:
+            respond = load_data('categories', 'ID', kind=[CATS_DB_COLS_NAMES[3], TRANSACTIONS[1]])
         for item in respond:
             categories_names.append(item[1])
         self.box_categories.addItems(categories_names)
@@ -53,11 +61,13 @@ class Categories_Window(QWidget):
         if check_if_exists('categories', 'Nazwa', name):
             message_box('[ADD]This category already exists...')
         else:
-            insert_data('categories', [name, 0.0])
+            insert_data('categories', [name, 0.0, self.type_choose.currentText()])
             message_box(f"Added category: '{name}'")
-            self.configure_window()
+            self.configure_window(kind=self.type_choose.currentText())
             self.configure_main_window()
+            self.line_name.clear()
             self.box_categories.setCurrentText(name)
+
 
     def edit(self) -> None:
         """
@@ -71,7 +81,7 @@ class Categories_Window(QWidget):
             old_name = self.box_categories.currentText()
             id = get_id_by_name('categories', 'Nazwa', old_name)
             new_data = [id, name]
-            update_row('categories', CATEGORIES_COLUMNS_NAMES, new_data)
+            update_row('categories', CATS_DB_COLS_NAMES, new_data)
             message_box(f"Category name changed from '{old_name}' to '{name}'")
             self.configure_window()
             self.configure_main_window()
