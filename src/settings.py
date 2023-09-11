@@ -29,8 +29,16 @@ MONTHS = {
 TABLES_SIZE = {
     'Expenses': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 2)),
     'Categories': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 2)),
-    'Revenues': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 3))
+    'Revenues': (int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT / 3)),
+    'Plot': (int(SCREEN_WIDTH / 3) + 28, int(SCREEN_HEIGHT / 3))
 }
+
+LABELS = {
+    'Revenues': (LEFTSPACE, int(SCREEN_HEIGHT / 80), int(SCREEN_WIDTH / 3) + 25, 28),
+    'Expenses': (LEFTSPACE, int(SCREEN_HEIGHT / 2.52), int(SCREEN_WIDTH / 3) + 25, 28)
+}
+
+PLOT_SIZE = (5, 4) # <- in inches
 
 BUTTON_1_SIZE = (140, 40)
 
@@ -43,11 +51,12 @@ w = int(TABLES_SIZE['Categories'][0] / 10)
 CAT_TABLE_COLS_WIDTH = [4 * w, 2 * w, 2 * w, 2 * w]
 CATS_TABLE_COLS_NAMES = ['Nazwa kategorii', 'Budżet', 'Wydane', 'Stan']
 
-
 ERROR_CONNECT_TO_DATABASE = 'There was problem with connect to database...'
 
 VALUE_MAX = 10000.00
 VALUE_MIN = 0.00
+
+
 
 
 

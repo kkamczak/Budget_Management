@@ -1,20 +1,24 @@
 """
 Then module is used to display category edit window.
 """
+from typing import Callable, Optional
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import uic
-from typing import Callable, Optional
-from src.database import check_if_exists, insert_data, load_data, get_id_by_name, update_row, delete_record
+from src.database import check_if_exists, insert_data, load_data, get_id_by_name, \
+    update_row, delete_record
 from src.support import message_box
 from src.settings import CATS_DB_COLS_NAMES, TRANSACTIONS
 
-class Categories_Window(QWidget):
+class CategoriesWindow(QWidget):
     """
     This class is responsible for the category edit window
     """
     def __init__(self, configure: Callable) -> None:
         """
-        :param configure: Callable
+        Initialize the category edit window.
+
+        Args:
+            configure (Callable): A callable function used to configure tables on the main window.
         """
         super().__init__()
         uic.loadUi('src/gui/categories_window.ui', self) # Load GUI from designer.exe file
@@ -29,14 +33,19 @@ class Categories_Window(QWidget):
         self.button_delete.clicked.connect(self.delete)
         self.button_cancel.clicked.connect(self.close)
         self.type_choose.addItems(TRANSACTIONS)
-        self.type_choose.currentTextChanged.connect(lambda: self.configure_window(kind=self.type_choose.currentText()))
+        self.type_choose.currentTextChanged.connect(
+            lambda: self.configure_window(kind=self.type_choose.currentText())
+        )
         self.configure_window()
 
     def configure_window(self, kind: Optional[str] = TRANSACTIONS[0]) -> None:
         """
-        This method configures the items on the window
-        :return: None
+        Configure the items on the category edit window.
+
+        Args:
+            kind (Optional[str]): The type of transaction. Defaults to TRANSACTIONS[0].
         """
+
         # Choose type of transaction:
         self.type_choose.setCurrentText(kind)
 
@@ -54,8 +63,7 @@ class Categories_Window(QWidget):
 
     def add(self) -> None:
         """
-        This method is used to add a new category
-        :return: None
+        Add a new category.
         """
         name = self.line_name.text()
         if check_if_exists('categories', 'Nazwa', name):
@@ -71,16 +79,16 @@ class Categories_Window(QWidget):
 
     def edit(self) -> None:
         """
-        This method is used to edit category
-        :return: None
+        Edit a category.
         """
+
         name = self.line_name.text()
         if check_if_exists('categories', 'Nazwa', name):
             message_box('[EDIT]This category already exists...')
         else:
             old_name = self.box_categories.currentText()
-            id = get_id_by_name('categories', 'Nazwa', old_name)
-            new_data = [id, name]
+            index = get_id_by_name('categories', 'Nazwa', old_name)
+            new_data = [index, name]
             update_row('categories', CATS_DB_COLS_NAMES, new_data)
             message_box(f"Category name changed from '{old_name}' to '{name}'")
             self.configure_window()
@@ -88,12 +96,12 @@ class Categories_Window(QWidget):
 
     def delete(self) -> None:
         """
-        This category is used to delete category
-        :return: None
+        Delete a category.
         """
+
         name = self.box_categories.currentText()
-        id = get_id_by_name('categories', 'Nazwa', name)
-        delete_record('categories', id)
+        index = get_id_by_name('categories', 'Nazwa', name)
+        delete_record('categories', index)
         message_box(f"Removed category: '{name}'")
         self.configure_window()
         self.configure_main_window()

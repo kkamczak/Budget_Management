@@ -1,22 +1,24 @@
 """
 This module contains classes responsible for operations on expenses
 """
+from typing import Callable, Optional
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
 from src.support import puts
 from src.database import insert_data, update_row, load_data
 from src.settings import  TRANS_COLS_NAMES, TRANSACTIONS, CATS_DB_COLS_NAMES, VALUE_MAX, VALUE_MIN
-from typing import Callable, Optional
 
-
-class Add_Window(QWidget):
+class AddWindow(QWidget):
     """
     This class is used to create an expense adding window
     """
     def __init__(self, configure: Callable) -> None:
         """
-        :param configure: Callable
+        Initialize an expense adding window.
+
+        Args:
+            configure (Callable): A callable function used to configure the main window.
         """
         super().__init__()
         uic.loadUi('src/gui/add_window.ui', self) # Load GUI from designer.exe file
@@ -30,25 +32,24 @@ class Add_Window(QWidget):
         self.button_cancel.clicked.connect(self.close)
         self.button_add.clicked.connect(self.add)
         self.type_choose.addItems(TRANSACTIONS)
-        self.type_choose.currentTextChanged.connect(lambda: self.configure_window(kind=self.type_choose.currentText()))
+        self.type_choose.currentTextChanged.connect(
+            lambda: self.configure_window(kind=self.type_choose.currentText())
+        )
 
         self.configure_window()
 
     def configure_window(self, kind: Optional[str] = TRANSACTIONS[0]) -> None:
         """
-        This method is used to configure elements on window
-        :param kind: Optional[str]
-        :return:
+        Configure elements on the expense adding window.
+
+        Args:
+            kind (Optional[str]): The type of transaction. Defaults to TRANSACTIONS[0].
         """
-        # Choose type of transaction:
 
-        self.type_choose.setCurrentText(kind)
+        self.type_choose.setCurrentText(kind) # Choose type of transaction
+        self.date_edit.setDate(QDate.currentDate()) # Data element
+        self.category_edit.clear() # ComboBox category element:
 
-        # Data element:
-        self.date_edit.setDate(QDate.currentDate())
-
-        # ComboBox category element:
-        self.category_edit.clear()
         categories_names = []
         if self.type_choose.currentText() == TRANSACTIONS[0]:
             respond = load_data('categories', 'ID', kind=[CATS_DB_COLS_NAMES[3], TRANSACTIONS[0]])
@@ -63,8 +64,7 @@ class Add_Window(QWidget):
         self.value_edit.setMinimum(VALUE_MIN)
     def add(self) -> None:
         """
-        This method is used to add a new expense
-        :return: None
+        Add a new expense to the database.
         """
         kind = self.type_choose.currentText()
         date = self.date_edit.date().toString("yyyy-MM-dd")
@@ -81,21 +81,31 @@ class Add_Window(QWidget):
         self.configure_main_window()
         self.close()
 
-class Edit_Transaction(Add_Window):
+class EditTransaction(AddWindow):
     """
-    This class is used to create an expense editing window
+    This class is used to create a transaction editing window
     """
     def __init__(self, configure: Callable, row_data: list) -> None:
         """
-        :param configure: Callable
-        :param row_data: list
+        Initialize an expense editing window.
+
+        Args:
+            configure (Callable): A callable function used to configure the main window.
+            row_data (list): The data of the selected transaction row.
         """
         super().__init__(configure)
         self.index = row_data[1]
 
         self.configure_interface(row_data)
 
-    def configure_interface(self, row_data) -> None:
+    def configure_interface(self, row_data: list) -> None:
+        """
+        Configure the interface of the transaction editing window.
+
+        Args:
+            row_data (list): The data of the selected transaction row.
+        """
+
         # - Configure names:
         self.setWindowTitle("Edit transaction")
         self.setFixedSize(self.size())
@@ -116,8 +126,7 @@ class Edit_Transaction(Add_Window):
 
     def add(self) -> None:
         """
-        This method is used to edit expense
-        :return: None
+        Edit an existing transaction in the database.
         """
         kind = self.type_choose.currentText()
         date = self.date_edit.date().toString("yyyy-MM-dd")
